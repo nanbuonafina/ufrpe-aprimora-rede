@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #c9642e;
+  --color-accent: #eea732;
+  --color-terracotta: #a94722;
+  --color-olive: #576935;
+  --color-base: #dcc9b8;
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: #2e2013;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-terracotta);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.osc-label-tooltip {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border-color: #e4d2c0;
+  box-shadow: 0 1px 2px rgba(46, 32, 19, 0.12);
+}
+
+.leaflet-container {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  background: #dceae6;
+}
+
+/* Scrollbar for the internal OSC list / dashboard panels */
+.thin-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d8c2ab;
+  border-radius: 999px;
+}

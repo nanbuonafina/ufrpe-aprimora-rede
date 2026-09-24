@@ -4,6 +4,7 @@ import { Hero } from './components/Hero'
 import { PartnersBar } from './components/PartnersBar'
 import { About } from './components/About'
 import { StatsSection } from './components/StatsSection'
+import { IndicadoresSection } from './components/Indicadores/IndicadoresSection'
 import { DashboardSection } from './components/Dashboard/DashboardSection'
 import { NewsSection } from './components/NewsSection'
 import { AssessoriaForm, type AssessoriaPrefill } from './components/AssessoriaForm'
@@ -27,6 +28,7 @@ export default function App() {
         <PartnersBar />
         <About />
         <StatsSection />
+        <IndicadoresSection />
         <DashboardSection onRequestAssessoria={handleRequestFromDashboard} />
         <NewsSection />
         <AssessoriaForm prefill={prefill} />

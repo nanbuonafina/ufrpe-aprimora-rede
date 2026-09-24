@@ -5,6 +5,7 @@ import { site } from '../data/content'
 
 const NAV_ITEMS = [
   { label: 'Sobre', href: '#sobre' },
+  { label: 'Indicadores', href: '#indicadores' },
   { label: 'Dashboard', href: '#dashboard' },
   { label: 'Assessoria', href: '#assessoria' },
   { label: 'Novidades', href: '#novidades' },

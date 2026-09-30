@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { Maximize2, Minimize2, Map as MapIcon, Search } from 'lucide-react'
 import { Container } from '../ui/Container'
 import { SectionHeading } from '../ui/SectionHeading'
-import { oscs, municipioInfo, type Osc, type TipoServico } from '../../data/oscs'
+import { oscs, municipioInfo, tipoServicoInfo, type Osc, type TipoServico } from '../../data/oscs'
 import { Sidebar } from './Sidebar'
 import { MapView } from './MapView'
 import { DetailPanel } from './DetailPanel'
@@ -12,7 +12,7 @@ import type { DashboardFilters, MunicipioFiltro } from './types'
 // dashboard actually mounts instead of bloating the initial page bundle.
 const StatsCharts = lazy(() => import('./StatsCharts').then((m) => ({ default: m.StatsCharts })))
 
-const ALL_TIPOS = new Set<TipoServico>(['crianca', 'idoso', 'mulher', 'pessoa_rua', 'deficiencia'])
+const ALL_TIPOS = new Set(Object.keys(tipoServicoInfo) as TipoServico[])
 
 interface DashboardSectionProps {
   onRequestAssessoria: (osc: Osc) => void
@@ -38,9 +38,9 @@ export function DashboardSection({ onRequestAssessoria }: DashboardSectionProps)
     const term = filters.search.trim().toLowerCase()
     return oscs.filter(
       (o) =>
-        filters.activeTipos.has(o.tipo) &&
+        o.grupos.some((g) => filters.activeTipos.has(g)) &&
         (filters.activeMunicipio === 'todos' || o.municipio === filters.activeMunicipio) &&
-        (term === '' || o.nome.toLowerCase().includes(term)),
+        (term === '' || o.nome.toLowerCase().includes(term) || o.sigla.toLowerCase().includes(term)),
     )
   }, [filters])
 
@@ -56,12 +56,23 @@ export function DashboardSection({ onRequestAssessoria }: DashboardSectionProps)
     })
   }
 
+  function toggleAllTipos() {
+    setFilters((prev) => ({
+      ...prev,
+      activeTipos: prev.activeTipos.size === ALL_TIPOS.size ? new Set() : new Set(ALL_TIPOS),
+    }))
+  }
+
   function selectMunicipio(municipio: MunicipioFiltro) {
     setFilters((prev) => ({ ...prev, activeMunicipio: municipio }))
   }
 
   const board = (
-    <div className="flex h-full flex-col overflow-y-auto rounded-2xl border border-line bg-white shadow-card md:overflow-hidden">
+    <div
+      className={`flex flex-col rounded-2xl border border-line bg-white shadow-card ${
+        expanded ? 'thin-scrollbar h-full overflow-y-auto' : ''
+      }`}
+    >
       <div className="flex flex-wrap items-center gap-3 border-b border-line p-3.5">
         <div className="flex items-center gap-2 font-semibold text-ink">
           <MapIcon size={18} className="text-primary" aria-hidden="true" />
@@ -100,12 +111,18 @@ export function DashboardSection({ onRequestAssessoria }: DashboardSectionProps)
         </button>
       </div>
 
-      <div className="flex flex-col md:flex-1 md:flex-row md:overflow-hidden">
+      {/* Altura fixa só no desktop: mapa + filtros ocupam a área visível e os gráficos vêm logo abaixo. */}
+      <div
+        className={`flex shrink-0 flex-col md:flex-row md:overflow-hidden ${
+          expanded ? 'md:h-[calc(100dvh-8rem)] md:min-h-[560px]' : 'md:h-[680px] lg:h-[720px]'
+        }`}
+      >
         <Sidebar
           filters={filters}
           visibleOscs={visibleOscs}
           selectedId={selectedId}
           onToggleTipo={toggleTipo}
+          onToggleAllTipos={toggleAllTipos}
           onSelectMunicipio={selectMunicipio}
           onSelectOsc={setSelectedId}
         />
@@ -126,13 +143,13 @@ export function DashboardSection({ onRequestAssessoria }: DashboardSectionProps)
           <SectionHeading
             eyebrow="Dashboard interativo"
             title="Onde estão as OSCs da Região Metropolitana do Recife"
-            description={`${oscs.length} organizações mapeadas em ${Object.keys(municipioInfo).length} municípios da RMR. Filtre por tipo de serviço ou município para explorar o território.`}
+            description={`${oscs.length} organizações cadastradas no programa em ${Object.keys(municipioInfo).length} municípios da RMR. Filtre por público atendido ou município para explorar o território.`}
           />
         </div>
       </Container>
 
       {!expanded && (
-        <div className="mx-auto mt-8 w-full max-w-[1800px] px-3 sm:px-6 md:h-[700px] lg:h-[780px] xl:h-[840px]">
+        <div className="mx-auto mt-8 w-full max-w-[1800px] px-3 sm:px-6">
           {board}
         </div>
       )}

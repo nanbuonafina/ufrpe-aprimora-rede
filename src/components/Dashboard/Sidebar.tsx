@@ -1,4 +1,4 @@
-import { tipoServicoInfo, municipioInfo, oscs, type MunicipioSlug, type TipoServico } from '../../data/oscs'
+import { tipoServicoInfo, municipioInfo, oscs, corDaOsc, type MunicipioSlug, type TipoServico } from '../../data/oscs'
 import type { DashboardFilters, MunicipioFiltro } from './types'
 
 interface SidebarProps {
@@ -6,43 +6,41 @@ interface SidebarProps {
   visibleOscs: typeof oscs
   selectedId: number | null
   onToggleTipo: (tipo: TipoServico) => void
+  onToggleAllTipos: () => void
   onSelectMunicipio: (municipio: MunicipioFiltro) => void
   onSelectOsc: (id: number) => void
 }
 
-const MUNICIPIO_ORDER: MunicipioSlug[] = [
-  'recife',
-  'olinda',
-  'jaboatao',
-  'paulista',
-  'cabo',
-  'camaragibe',
-  'sao_lourenco',
-  'abreu_e_lima',
-  'igarassu',
-  'itapissuma',
-  'itamaraca',
-  'moreno',
-  'aracoiaba',
-  'ipojuca',
-]
+const MUNICIPIO_ORDER = Object.keys(municipioInfo) as MunicipioSlug[]
 
 export function Sidebar({
   filters,
   visibleOscs,
   selectedId,
   onToggleTipo,
+  onToggleAllTipos,
   onSelectMunicipio,
   onSelectOsc,
 }: SidebarProps) {
-  const tipoCounts = countBy(oscs, (o) => o.tipo)
+  const tipoCounts = countBy(
+    oscs.flatMap((o) => o.grupos),
+    (g) => g,
+  )
+  const allTiposOn = filters.activeTipos.size === Object.keys(tipoServicoInfo).length
   const municipioCounts = countBy(oscs, (o) => o.municipio)
 
   return (
-    <div className="flex w-full flex-col border-line md:w-72 md:shrink-0 md:border-r">
-      <div className="border-b border-line p-3.5">
-        <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-widest text-ink-faint">
-          Tipo de serviço
+    <div className="thin-scrollbar flex w-full flex-col border-line md:min-h-0 md:w-72 md:shrink-0 md:overflow-y-auto md:border-r">
+      <div className="shrink-0 border-b border-line p-3.5">
+        <p className="mb-2.5 flex items-center justify-between text-[10px] font-semibold uppercase tracking-widest text-ink-faint">
+          Público atendido
+          <button
+            type="button"
+            onClick={onToggleAllTipos}
+            className="rounded normal-case tracking-normal text-primary-dark hover:underline"
+          >
+            {allTiposOn ? 'Limpar' : 'Marcar todos'}
+          </button>
         </p>
         <div className="flex flex-col gap-1">
           {(Object.entries(tipoServicoInfo) as [TipoServico, { label: string; color: string }][]).map(
@@ -74,10 +72,10 @@ export function Sidebar({
         </div>
       </div>
 
-      <div className="border-b border-line p-3.5">
+      <div className="shrink-0 border-b border-line p-3.5">
         <p className="mb-2 flex items-center justify-between text-[10px] font-semibold uppercase tracking-widest text-ink-faint">
           Município
-          <span className="normal-case tracking-normal text-ink-faint/70">{MUNICIPIO_ORDER.length} na RMR</span>
+          <span className="normal-case tracking-normal text-ink-faint/70">{MUNICIPIO_ORDER.length} com OSCs</span>
         </p>
         <button
           type="button"
@@ -92,7 +90,7 @@ export function Sidebar({
             {oscs.length}
           </span>
         </button>
-        <div className="thin-scrollbar mt-1 max-h-52 overflow-y-auto pr-0.5">
+        <div className="mt-1">
           {MUNICIPIO_ORDER.map((slug) => (
             <button
               key={slug}
@@ -112,7 +110,7 @@ export function Sidebar({
         </div>
       </div>
 
-      <div className="thin-scrollbar max-h-72 flex-1 overflow-y-auto md:max-h-none">
+      <div className="thin-scrollbar max-h-72 flex-1 overflow-y-auto md:max-h-none md:min-h-[240px]">
         {visibleOscs.length === 0 ? (
           <p className="p-5 text-center text-xs text-ink-faint">Nenhuma OSC encontrada.</p>
         ) : (
@@ -129,11 +127,13 @@ export function Sidebar({
               <p className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] text-ink-soft">
                 <span
                   className="inline-block h-1.5 w-1.5 rounded-full"
-                  style={{ backgroundColor: tipoServicoInfo[osc.tipo].color }}
+                  style={{ backgroundColor: corDaOsc(osc) }}
                   aria-hidden="true"
                 />
-                {tipoServicoInfo[osc.tipo].label}
-                <span className="text-ink-faint">· {osc.bairro}</span>
+                {osc.grupos.length === 1
+                  ? tipoServicoInfo[osc.grupos[0]].label
+                  : `${osc.grupos.length} públicos`}
+                <span className="text-ink-faint">· {municipioInfo[osc.municipio].label}</span>
               </p>
             </button>
           ))

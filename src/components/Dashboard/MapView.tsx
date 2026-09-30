@@ -1,7 +1,7 @@
 import 'leaflet/dist/leaflet.css'
 import { CircleMarker, MapContainer, TileLayer, Tooltip, useMap } from 'react-leaflet'
 import { useEffect } from 'react'
-import { tipoServicoInfo, type Osc } from '../../data/oscs'
+import { corDaOsc, multiplosPublicos, tipoServicoInfo, type Osc } from '../../data/oscs'
 
 interface MapViewProps {
   oscs: Osc[]
@@ -44,7 +44,7 @@ export function MapView({ oscs, selectedId, onSelect }: MapViewProps) {
 
         {oscs.map((osc) => {
           const isActive = osc.id === selectedId
-          const color = tipoServicoInfo[osc.tipo].color
+          const color = corDaOsc(osc)
           return (
             <CircleMarker
               key={osc.id}
@@ -68,10 +68,10 @@ export function MapView({ oscs, selectedId, onSelect }: MapViewProps) {
 
       <div className="pointer-events-none absolute bottom-3 left-3 z-[500] rounded-lg border border-line bg-white/95 px-3 py-2.5 text-[11px] text-ink-soft shadow-card">
         <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-ink-faint">
-          Tipo de serviço
+          Público atendido
         </p>
         <ul className="space-y-1">
-          {Object.entries(tipoServicoInfo).map(([key, info]) => (
+          {[...Object.entries(tipoServicoInfo), ['multiplos', multiplosPublicos] as const].map(([key, info]) => (
             <li key={key} className="flex items-center gap-1.5">
               <span
                 className="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
@@ -82,6 +82,9 @@ export function MapView({ oscs, selectedId, onSelect }: MapViewProps) {
             </li>
           ))}
         </ul>
+        <p className="mt-1.5 max-w-[160px] text-[10px] leading-snug text-ink-faint">
+          Pins posicionados de forma aproximada no município.
+        </p>
       </div>
     </div>
   )

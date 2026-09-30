@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { BarChart3, Scale, Table2, TrendingDown, TrendingUp, X } from 'lucide-react'
 import {
+  calcularLacuna,
   eixosIndicadores,
   formatPct,
   type EixoIndicadores,
@@ -207,6 +208,7 @@ export function IndicadoresPanel({ activeId, onChangeEixo, onClose }: Indicadore
 }
 
 function EixoResumo({ eixo }: { eixo: EixoIndicadores }) {
+  const lacuna = calcularLacuna(eixo)
   return (
     <aside className="space-y-4">
       <div>
@@ -217,7 +219,7 @@ function EixoResumo({ eixo }: { eixo: EixoIndicadores }) {
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
         <DestaqueCard tipo="forca" valor={eixo.forca.valor} texto={eixo.forca.texto} />
-        <DestaqueCard tipo="lacuna" valor={eixo.lacuna.valor} texto={eixo.lacuna.texto} />
+        <DestaqueCard tipo="lacuna" valor={lacuna.valor} texto={lacuna.rotulo} contexto={lacuna.indicador} />
       </div>
 
       {eixo.marcosLegais.length > 0 && (
@@ -237,7 +239,17 @@ function EixoResumo({ eixo }: { eixo: EixoIndicadores }) {
   )
 }
 
-function DestaqueCard({ tipo, valor, texto }: { tipo: 'forca' | 'lacuna'; valor: number; texto: string }) {
+function DestaqueCard({
+  tipo,
+  valor,
+  texto,
+  contexto,
+}: {
+  tipo: 'forca' | 'lacuna'
+  valor: number
+  texto: string
+  contexto?: string
+}) {
   const forca = tipo === 'forca'
   const Icon = forca ? TrendingUp : TrendingDown
   return (
@@ -252,6 +264,7 @@ function DestaqueCard({ tipo, valor, texto }: { tipo: 'forca' | 'lacuna'; valor:
       </span>
       <span className="mt-1 block font-sans text-3xl font-semibold text-ink">{formatPct(valor)}</span>
       <span className="mt-0.5 block text-sm leading-snug text-ink-soft">{texto}</span>
+      {contexto && <span className="mt-1 block text-xs leading-snug text-ink-faint">{contexto}</span>}
     </div>
   )
 }

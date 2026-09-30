@@ -12,7 +12,7 @@ export const hero = {
   tag: 'Região Metropolitana do Recife',
   title: 'Apoio técnico, jurídico e contábil para organizações de assistência social',
   description:
-    'O Aprimora Rede+ é uma iniciativa do Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome (MDS) e o Governo Federal, que conecta Organizações da Sociedade Civil da Região Metropolitana do Recife ao assessoramento que precisam para fortalecer seus serviços no Sistema Único de Assistência Social (SUAS).',
+    'Promover o fortalecimento da rede socioassistencial do SUAS por meio da construção e consolidação da identidade com a Política de Assistência Social, do apoio à melhoria da profissionalização e vinculação das entidades e OSCs de assistência social com o SUAS, visando o aumento da cobertura e qualificação das provisões socioassistenciais. A atuação territorial do núcleo da UFRPE ocorre em parceria com o MDS e a SUDENE.',
   primaryCta: 'Solicitar assessoria',
   secondaryCta: 'Conheça o programa',
 }
@@ -52,11 +52,11 @@ export const offerCards: OfferCard[] = [
 
 export const programNumbers = [
   { value: 6, suffix: '', label: 'Metas do programa' },
-  { value: 7, suffix: '', label: 'Municípios atendidos' },
+  { value: 5, suffix: '', label: 'Municípios atendidos' },
   { value: 4, suffix: '+', label: 'Capacitações previstas' },
   { value: 2, suffix: '', label: 'Eventos/seminários' },
   { value: 6, suffix: '+', label: 'Materiais educativos' },
-  { value: 20, suffix: '', label: 'OSCs mapeadas na RMR' },
+  { value: 65, suffix: '', label: 'OSCs mapeadas na RMR' },
 ]
 
 export interface Eixo {

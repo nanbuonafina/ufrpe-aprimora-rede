@@ -61,10 +61,8 @@ export interface EixoIndicadores {
   objetivo: string
   icon: LucideIcon
   marcosLegais: string[]
-  /** Maior força do eixo no T0. */
+  /** Maior força do eixo no T0. A lacuna não é editada: vem de `calcularLacuna`. */
   forca: Destaque
-  /** Maior lacuna do eixo no T0. */
-  lacuna: Destaque
   indicadores: Indicador[]
 }
 
@@ -95,7 +93,6 @@ export const eixosIndicadores: EixoIndicadores[] = [
       'Resolução CMAS nº 182, de 13/02/2025',
     ],
     forca: { valor: 94, texto: 'das OSCs estão inscritas no CMAS' },
-    lacuna: { valor: 22, texto: 'possuem certificação CEBAS' },
     indicadores: [
       {
         id: 'cmas',
@@ -179,7 +176,6 @@ export const eixosIndicadores: EixoIndicadores[] = [
     icon: PiggyBank,
     marcosLegais: [],
     forca: { valor: 78, texto: 'utilizam os recursos conforme o plano de trabalho' },
-    lacuna: { valor: 12.5, texto: 'acessam subvenção federal' },
     indicadores: [
       {
         id: 'plano-trabalho',
@@ -204,7 +200,6 @@ export const eixosIndicadores: EixoIndicadores[] = [
           { label: 'Subvenção estadual', valor: 17.2 },
           { label: 'Mensalidade', valor: 17.2 },
           { label: 'Subvenção federal', valor: 12.5 },
-          // Mantido como na planilha; confirmar com a equipe se é de fato uma fonte.
           { label: 'Certificação CEBAS', valor: 7.8 },
         ],
       },
@@ -219,7 +214,6 @@ export const eixosIndicadores: EixoIndicadores[] = [
     icon: HeartHandshake,
     marcosLegais: ['Tipificação Nacional de Serviços Socioassistenciais'],
     forca: { valor: 54, texto: 'ofertam o Serviço de Convivência (SCFV)' },
-    lacuna: { valor: 5, texto: 'atuam em calamidades públicas e emergências' },
     indicadores: [
       {
         id: 'psb',
@@ -263,7 +257,6 @@ export const eixosIndicadores: EixoIndicadores[] = [
     icon: Megaphone,
     marcosLegais: [],
     forca: { valor: 80, texto: 'se comunicam com o público por meios digitais' },
-    lacuna: { valor: 12, texto: 'se comunicam via instituições parceiras da rede' },
     indicadores: [
       {
         id: 'comunicacao-publico',
@@ -304,7 +297,6 @@ export const eixosIndicadores: EixoIndicadores[] = [
     icon: Network,
     marcosLegais: [],
     forca: { valor: 78, texto: 'acompanham os encaminhamentos que realizam' },
-    lacuna: { valor: 15, texto: 'recebem contrarreferência/devolutiva da rede' },
     indicadores: [
       {
         id: 'encaminham',
@@ -341,6 +333,28 @@ export const eixosIndicadores: EixoIndicadores[] = [
 ]
 
 export const totalIndicadores = eixosIndicadores.reduce((n, e) => n + e.indicadores.length, 0)
+
+export interface Lacuna {
+  valor: number
+  rotulo: string
+  /** Título do indicador de onde o valor saiu, para dar contexto ao rótulo. */
+  indicador: string
+}
+
+/**
+ * Maior lacuna = menor valor do eixo (regra confirmada pela equipe).
+ * Considera percentuais e itens de categorias. Os níveis de conhecimento ficam
+ * de fora: ali um valor baixo em "Nenhum" é positivo, não uma lacuna.
+ * Em caso de empate, vale o primeiro na ordem da planilha.
+ */
+export function calcularLacuna(eixo: EixoIndicadores): Lacuna {
+  const candidatos: Lacuna[] = eixo.indicadores.flatMap((ind) => {
+    if (ind.tipo === 'percentual') return [{ valor: ind.valor, rotulo: ind.rotulo, indicador: ind.titulo }]
+    if (ind.tipo === 'categorias') return ind.itens.map((i) => ({ valor: i.valor, rotulo: i.label, indicador: ind.titulo }))
+    return []
+  })
+  return candidatos.reduce((min, c) => (c.valor < min.valor ? c : min))
+}
 
 /** Valores de primeiro nível do eixo, na ordem da planilha — usados no mini-gráfico dos cards. */
 export function serieResumo(eixo: EixoIndicadores): number[] {

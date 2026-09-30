@@ -17,9 +17,7 @@ export function Footer() {
             </div>
           </div>
           <p className="mt-4 text-xs leading-relaxed text-white/60">
-            Núcleo de Apoio às Organizações da Sociedade Civil de Assistência Social, em parceria com o
-            Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome (MDS) e o
-            Governo Federal do Brasil.
+            Núcleo de Apoio às Organizações da Sociedade Civil de Assistência Social, em parceria com o Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome (MDS) e Superintendência do Desenvolvimento do Nordeste (SUDENE).
           </p>
         </div>
 

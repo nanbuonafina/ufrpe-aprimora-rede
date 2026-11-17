@@ -1,5 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
 import { Scale, HandCoins, Wrench } from 'lucide-react'
+import { oscs } from './oscs'
 
 export const site = {
   name: 'Aprimora Rede+',
@@ -56,7 +57,7 @@ export const programNumbers = [
   { value: 4, suffix: '+', label: 'Capacitações previstas' },
   { value: 2, suffix: '', label: 'Eventos/seminários' },
   { value: 6, suffix: '+', label: 'Materiais educativos' },
-  { value: 65, suffix: '', label: 'OSCs mapeadas na RMR' },
+  { value: oscs.length, suffix: '', label: 'OSCs mapeadas na RMR' },
 ]
 
 export interface Eixo {

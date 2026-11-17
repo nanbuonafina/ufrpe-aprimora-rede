@@ -1,6 +1,6 @@
 /**
  * OSCs da Região Metropolitana do Recife cadastradas no programa.
- * Fonte única: documentos-compartilhados/oscs-rmr.xlsx (cadastros de OSCs de PE nos
+ * Fonte única: documentos-compartilhados/oscs-rmr-atualizado-PE.xlsx (cadastros de OSCs de PE nos
  * municípios da RMR; cadastros repetidos do mesmo CNPJ mantêm o preenchimento mais recente).
  */
 
